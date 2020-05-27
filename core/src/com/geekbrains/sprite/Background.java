@@ -2,6 +2,7 @@ package com.geekbrains.sprite;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import com.geekbrains.base.Sprite;
 import com.geekbrains.math.Rect;
 

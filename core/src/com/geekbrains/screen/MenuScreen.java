@@ -1,7 +1,6 @@
 package com.geekbrains.screen;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -9,12 +8,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.geekbrains.base.BaseScreen;
 import com.geekbrains.math.Rect;
 import com.geekbrains.sprite.Background;
-
 import com.geekbrains.sprite.ButtonExit;
 import com.geekbrains.sprite.ButtonPlay;
 import com.geekbrains.sprite.Star;
 
 public class MenuScreen extends BaseScreen {
+
     private final Game game;
     private Texture bg;
     private Background background;
@@ -32,7 +31,7 @@ public class MenuScreen extends BaseScreen {
         super.show();
         bg = new Texture("textures/bg.png");
         background = new Background(bg);
-        atlas = new TextureAtlas(Gdx.files.internal("textures/mainAtlas.pack"));
+        atlas = new TextureAtlas("textures/menuAtlas.pack");
         buttonExit = new ButtonExit(atlas);
         buttonPlay = new ButtonPlay(atlas, game);
         stars = new Star[256];
@@ -95,4 +94,5 @@ public class MenuScreen extends BaseScreen {
         buttonPlay.draw(batch);
         batch.end();
     }
+
 }

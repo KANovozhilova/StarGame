@@ -2,11 +2,13 @@ package com.geekbrains.sprite;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
+
 import com.geekbrains.base.Sprite;
 import com.geekbrains.math.Rect;
 import com.geekbrains.math.Rnd;
 
 public class Star extends Sprite {
+
     private Vector2 v;
     private Rect worldBounds;
 
