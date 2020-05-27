@@ -1,80 +1,85 @@
 package com.geekbrains.screen;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
-
 import com.geekbrains.base.BaseScreen;
 import com.geekbrains.math.Rect;
+import com.geekbrains.pool.BulletPool;
 import com.geekbrains.sprite.Background;
-import com.geekbrains.sprite.ButtonExit;
-import com.geekbrains.sprite.ButtonPlay;
+import com.geekbrains.sprite.MainShip;
 import com.geekbrains.sprite.Star;
 
-public class MenuScreen extends BaseScreen {
-    private final Game game;
+public class GameScreen extends BaseScreen {
+
     private Texture bg;
     private Background background;
     private TextureAtlas atlas;
-    private ButtonExit buttonExit;
-    private ButtonPlay buttonPlay;
     private Star[] stars;
-
-    public MenuScreen(Game game) {
-        this.game = game;
-    }
+    private MainShip mainShip;
+    private BulletPool bulletPool;
 
     @Override
     public void show() {
         super.show();
         bg = new Texture("textures/bg.png");
         background = new Background(bg);
-        atlas = new TextureAtlas("textures/menuAtlas.pack");
-        buttonExit = new ButtonExit(atlas);
-        buttonPlay = new ButtonPlay(atlas, game);
-        stars = new Star[50];
+        atlas = new TextureAtlas("textures/mainAtlas.pack");
+        stars = new Star[64];
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(atlas);
         }
-    }
-
-    @Override
-    public void resize(Rect worldBounds) {
-        background.resize(worldBounds);
-        buttonExit.resize(worldBounds);
-        buttonPlay.resize(worldBounds);
-        for (Star star : stars) {
-            star.resize(worldBounds);
-        }
+        bulletPool = new BulletPool();
+        mainShip = new MainShip(atlas, bulletPool);
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
         update(delta);
+        free();
         draw();
+    }
+
+    @Override
+    public void resize(Rect worldBounds) {
+        background.resize(worldBounds);
+        for (Star star : stars) {
+            star.resize(worldBounds);
+        }
+        mainShip.resize(worldBounds);
     }
 
     @Override
     public void dispose() {
         bg.dispose();
         atlas.dispose();
+        bulletPool.dispose();
         super.dispose();
     }
 
     @Override
+    public boolean keyDown(int keycode) {
+        mainShip.keyDown(keycode);
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        mainShip.keyUp(keycode);
+        return false;
+    }
+
+    @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
-        buttonExit.touchDown(touch, pointer, button);
-        buttonPlay.touchDown(touch, pointer, button);
+        mainShip.touchDown(touch, pointer, button);
         return false;
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer, int button) {
-        buttonExit.touchUp(touch, pointer, button);
-        buttonPlay.touchUp(touch, pointer, button);
+        mainShip.touchUp(touch, pointer, button);
         return false;
     }
 
@@ -82,6 +87,12 @@ public class MenuScreen extends BaseScreen {
         for (Star star : stars) {
             star.update(delta);
         }
+        bulletPool.updateActiveSprites(delta);
+        mainShip.update(delta);
+    }
+
+    private void free() {
+        bulletPool.freeAllDestroyed();
     }
 
     private void draw() {
@@ -90,8 +101,8 @@ public class MenuScreen extends BaseScreen {
         for (Star star : stars) {
             star.draw(batch);
         }
-        buttonExit.draw(batch);
-        buttonPlay.draw(batch);
+        bulletPool.drawActiveSprites(batch);
+        mainShip.draw(batch);
         batch.end();
     }
 }
